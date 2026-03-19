@@ -23,3 +23,14 @@ class BookApp:
         if not os.path.exists(DATA_FILE):
             with open(DATA_FILE, 'w', encoding='utf-8') as f:
                 json.dump([], f, ensure_ascii=False, indent=4)
+
+    def load_books(self):
+        try:
+            with open(DATA_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            return []
+    
+    def save_books(self):
+        with open(DATA_FILE, 'w', encoding='utf-8') as f:
+            json.dump(self.books, f, ensure_ascii=False, indent=4)
