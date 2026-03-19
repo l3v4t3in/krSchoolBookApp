@@ -76,5 +76,65 @@ class BookApp:
         
         Button(bottom_frame, text="Обновить список", command=self.update_book_list,
                bg='#2196F3', fg='white', padx=10).pack(side=RIGHT, padx=10)
+        
+    def add_book(self):
+        book_name = self.book_entry.get().strip()
+        
+        if not book_name:
+            messagebox.showwarning("Предупреждение", "Введите название учебника!")
+            return
+        
+        new_book = {
+            'name': book_name,
+            'date': datetime.now().strftime('%d.%m.%Y %H:%M'),
+            'status': 'В наличии'
+        }
+        
+        self.books.append(new_book)
+        
+        self.save_books()
+        
+        self.book_entry.delete(0, END)
+        
+        self.update_book_list()
+        
+        messagebox.showinfo("Успех", f"Учебник '{book_name}' добавлен!")
+    
+    def delete_book(self):
+        selected = self.tree.selection()
+        
+        if not selected:
+            messagebox.showwarning("Предупреждение", "Выберите учебник для удаления!")
+            return
+        
+        result = messagebox.askyesno("Подтверждение", "Удалить выбранный учебник?")
+        
+        if result:
+            for item in selected:
+                item_text = self.tree.item(item)['values'][0]
+                for i, book in enumerate(self.books):
+                    if book['name'] == item_text:
+                        self.books.pop(i)
+                        break
+            
+            self.save_books()
+            self.update_book_list()
+            messagebox.showinfo("Успех", "Учебник удален!")
+    
+    def update_book_list(self):
+        """Обновляет список книг на экране"""
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+        
+        for book in self.books:
+            self.tree.insert('', END, values=(book['name'], book['date'], book['status']))
+        
+        total = len(self.books)
+        self.stats_label.config(text=f"Всего учебников: {total}")
+
+if __name__ == "__main__":
+    root = Tk()
+    app = BookApp(root)
+    root.mainloop()
     
    
