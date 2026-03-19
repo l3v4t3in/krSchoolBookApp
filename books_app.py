@@ -14,4 +14,12 @@ class BookApp:
         self.root.title("Учет выдачи учебников - МБОУ Красногорская СОШ")
         self.root.geometry("600x400")
         self.root.resizable(True, True)
-        
+        self.init_data_file()
+        self.books = self.load_books()
+        self.create_widgets()
+        self.update_book_list()
+    
+    def init_data_file(self):
+        if not os.path.exists(DATA_FILE):
+            with open(DATA_FILE, 'w', encoding='utf-8') as f:
+                json.dump([], f, ensure_ascii=False, indent=4)
